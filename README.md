@@ -7,7 +7,7 @@ Python script to automate collection of league-specific fantasy football player 
 1. Python
 2. ESPN account
 
-# Preperation
+# Prepare the script
 
 Find League ID
 
@@ -23,8 +23,8 @@ While logged in, get API request metadata (cookies, headers, params). You will n
 5. Find the API request that matches this format [LEAGUE_ID]?view=kona_player_info
 6. Copy the request by right clicking the request --> Copy --> Copy as cURL
 7. Go to https://curlconverter.com/python/ and paste the request
-8. Copy the reformatted data blocks for cookies, headers, params into espn_scrape.py
+8. Copy the reformatted data blocks for cookies, headers, params and replace the placeholders in espn_scrape.py
 
 # Data collection
 
-Open Terminal and run espn_scrape.py. The fantasy data will be retrieved and written to a CSV file.
+Open Terminal and run python espn_scrape.py. The fantasy data will be retrieved and written to a CSV file.
