@@ -1,4 +1,4 @@
-# ESPN Fantasy Football data scraper and auction draft value uploaded
+# ESPN Fantasy Football data scraper and auction draft value uploader
 
 Python script to automate data extraction and upload for ESPN Fantasy Football.
 
