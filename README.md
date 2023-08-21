@@ -31,7 +31,7 @@ While logged in, get API request metadata (cookies, headers, params). You will n
 
 # Data scrape
 
-Open Terminal and run 
+Open Terminal and run:
 
 ```
 python espn_scrape.py
@@ -41,10 +41,12 @@ The fantasy data will be retrieved and written to a CSV file.
 
 # Data upload
 
-Open Terminal and run python
+Create a CSV with the following values: playerId, auctionValue.
+
+Open Terminal and run:
 
 ```
-python espn_update.py --csv data.csv --year 2023 --league_id 987654
+python espn_update.py --csv auction_values.csv --year 2023 --league_id 987654
 ```
 
 Year will default to current calendar year. League id will default to config.py value
