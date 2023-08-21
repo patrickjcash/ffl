@@ -2,8 +2,8 @@
 
 Python script to automate data extraction and upload for ESPN Fantasy Football.
 
-- **espn_scrape.py** pulls projected fantasy point data (based league-specific scoring)
-- **espn_update.py** uploads auction draft values
+- **espn_scrape.py** pulls projected player fantasy scoring data (based on league-specific scoring)
+- **espn_update.py** uploads auction values
 
 # Requirements
 
