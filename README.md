@@ -29,7 +29,7 @@ While logged in, get API request metadata (cookies, headers, params). You will n
 7. Go to https://curlconverter.com/python/ and paste the request
 8. Copy the reformatted data blocks for cookies, headers, params and replace the placeholders in **config.py**
 
-# Data collection
+# Data scrape
 
 Open Terminal and run 
 
