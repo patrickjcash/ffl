@@ -1,42 +1,57 @@
 import requests
 import csv
 from datetime import datetime
+import config  # Import the configuration from config.py
 
-# Default league ID
-default_league_id = '1234567'
-
-# Placeholders for cookies, headers, and params
-cookies = {
-    'cookie_name': 'cookie_value'
-    # Add other cookies if needed
+# Define team_id_to_abbreviation mapping here
+team_id_to_abbreviation = {
+    1: 'ATL',
+    2: 'BUF',
+    3: 'CHI',
+    4: 'CIN',
+    5: 'CLE',
+    6: 'DAL',
+    7: 'DEN',
+    8: 'DET',
+    9: 'GB',
+    10: 'TEN',
+    11: 'IND',
+    12: 'KC',
+    13: 'LV',
+    14: 'LAR',
+    15: 'MIA',
+    16: 'MIN',
+    17: 'NE',
+    18: 'NO',
+    19: 'NYG',
+    20: 'NYJ',
+    21: 'PHI',
+    22: 'ARI',
+    23: 'PIT',
+    24: 'LAC',
+    25: 'SF',
+    26: 'SEA',
+    27: 'TB',
+    28: 'WAS',
+    29: 'CAR',
+    30: 'JAC',
+    33: 'BAL',
+    34: 'HOU'
 }
 
-headers = {
-    'user-agent': 'Your User Agent',
-    'authorization': 'Bearer Your_Auth_Token'
-    # Add other headers if needed
+# Define position_id_to_string mapping here
+position_id_to_string = {
+    1: 'QB',
+    2: 'RB',
+    3: 'WR',
+    4: 'TE',
+    5: 'K',
+    16: 'DST'
 }
-
-params = {
-    'param_name': 'param_value'
-    # Add other parameters if needed
-}
-
-def position_id_to_string(position_id):
-    position_lookup = {
-        1: 'QB',
-        2: 'RB',
-        3: 'WR',
-        4: 'TE',
-        5: 'K',
-        16: 'DST'
-    }
-    return position_lookup.get(position_id, 'UNKNOWN')
 
 def update_headers(headers, x_fantasy_filter):
     # Update the 'x-fantasy-filter' header
     headers['x-fantasy-filter'] = x_fantasy_filter
-    
     return headers
 
 def fetch_and_export_data(year, league_id, headers, cookies, params):
@@ -56,19 +71,21 @@ def fetch_and_export_data(year, league_id, headers, cookies, params):
 
     with open(filename, 'w', newline='') as csvfile:
         csv_writer = csv.writer(csvfile)
-        csv_writer.writerow(['PLAYER', 'TEAM', 'POS', 'STATUS', 'PTS'])
+        csv_writer.writerow(['ID', 'PLAYER', 'TEAM', 'POS', 'STATUS', 'PTS'])
 
         for player in players:
             player_data = player['player']
+            player_id = player['id']
             player_name = player_data['fullName']
-            team = player_data['proTeamId']
+            team_id = player_data['proTeamId']
             position_id = player_data['defaultPositionId']
             injury_status = player_data.get('injuryStatus', '')  # Handle missing 'injuryStatus'
             applied_total = player_data['stats'][0]['appliedTotal']  # Rename stats to applied_total
 
-            position = position_id_to_string(position_id)
-            
-            csv_writer.writerow([player_name, team, position, injury_status, applied_total])
+            team = team_id_to_abbreviation.get(team_id, 'UNKNOWN')
+            position = position_id_to_string.get(position_id, 'UNKNOWN')
+
+            csv_writer.writerow([player_id, player_name, team, position, injury_status, applied_total])
 
     print(f'Data exported to {filename}')
 
@@ -76,7 +93,7 @@ if __name__ == '__main__':
     default_year = str(datetime.now().year)
     year = input(f'Enter the year (default: {default_year}): ') or default_year
 
-    league_id = input(f'Enter the league ID (default: {default_league_id}): ') or default_league_id
+    league_id = input(f'Enter the league ID (default: {config.league_id}): ') or config.league_id
 
     # Prompt for the number of players (limit)
     default_limit = '400'
@@ -98,6 +115,6 @@ if __name__ == '__main__':
         '"filterStatsForTopScoringPeriodIds":{"value":2,"additionalValue":["002023","102023","002022","022023"]}}}')
 
     # Update the headers with the x-fantasy-filter
-    updated_headers = update_headers(headers.copy(), x_fantasy_filter)
+    updated_headers = update_headers(config.headers.copy(), x_fantasy_filter)
 
-    fetch_and_export_data(year, league_id, updated_headers, cookies, params)
+    fetch_and_export_data(year, league_id, updated_headers, config.cookies, config.params)
