@@ -4,8 +4,8 @@ import argparse
 from datetime import datetime
 import config  # Import the configuration from config.py
 
-def fetch_and_upload_data(year, league_id, headers, cookies, json_data):
-    api_url = f"https://lm-api-writes.fantasy.espn.com/apis/v3/games/ffl/seasons/{year}/segments/0/leagues/{league_id}/teams/14"
+def fetch_and_upload_data(year, league_id, team_id, headers, cookies, json_data):
+    api_url = f"https://lm-api-writes.fantasy.espn.com/apis/v3/games/ffl/seasons/{year}/segments/0/leagues/{league_id}/teams/{team_id}"
     
     response = requests.post(api_url, json=json_data, headers=headers, cookies=cookies)
     
@@ -21,11 +21,13 @@ if __name__ == '__main__':
     parser.add_argument('--csv', required=True, help='Path to the CSV file containing data')
     parser.add_argument('--year', default=str(datetime.now().year), help='Year for the API endpoint')
     parser.add_argument('--league_id', default=config.league_id, help='League ID for the API endpoint (default from config)')
+    parser.add_argument('--team_id', default=config.team_id, help='Team ID for the API endpoint (default from config)')
     args = parser.parse_args()
 
     csv_path = args.csv
     year = args.year
     league_id = args.league_id
+    team_id = args.team_id
 
     json_data = {'draftStrategy': {'draftList': [], 'excludedPlayerIds': []}}
     with open(csv_path, 'r') as csvfile:
@@ -36,4 +38,4 @@ if __name__ == '__main__':
                 'playerId': int(row['playerId']),
             })
 
-    fetch_and_upload_data(year, league_id, config.headers, config.cookies, json_data)
+    fetch_and_upload_data(year, league_id, team_id, config.headers, config.cookies, json_data)
