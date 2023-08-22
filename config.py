@@ -6,7 +6,7 @@
 league_id = 'your_league_id_here'
 
 # Team ID
-team_id = 'default_team_id'
+team_id = 'your_team_id_here'
 
 # Cookies
 cookies = {
