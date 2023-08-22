@@ -4,7 +4,7 @@ Python script to automate data extraction and upload for ESPN Fantasy Football.
 
 - **espn_scrape.py** pulls projected player fantasy scoring data (based on league-specific scoring)
 - **espn_update.py** uploads salary cap draft strategy data
-- **espn_update.py** uploads snake order draft strategy data
+- **espn_snake.py** uploads snake order draft strategy data
 
 # Requirements
 
