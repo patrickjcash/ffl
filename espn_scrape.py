@@ -2,6 +2,7 @@ import requests
 import csv
 from datetime import datetime
 import config  # Import the configuration from config.py
+# import json
 
 # Define team_id_to_abbreviation mapping here
 team_id_to_abbreviation = {
@@ -56,11 +57,15 @@ def update_headers(headers, x_fantasy_filter):
 
 def fetch_and_export_data(year, league_id, headers, cookies, params):
     # Define the API endpoint URL
-    api_url = f'http://fantasy.espn.com/apis/v3/games/ffl/seasons/{year}/segments/0/leagues/{league_id}?view=kona_player_info'
+    api_url = f'https://lm-api-reads.fantasy.espn.com/apis/v3/games/ffl/seasons/{year}/segments/0/leagues/{league_id}?scoringPeriodId=0&view=kona_player_info'
 
     # Make the API request
     response = requests.get(api_url, headers=headers, cookies=cookies, params=params)
     data = response.json()
+
+    # Write the JSON response to a file
+    # with open('output.json', 'w') as file:
+    #     json.dump(data, file, indent=4)  # 'indent=4' makes the output more readable
 
     # Extract player data
     players = data['players']
@@ -99,20 +104,24 @@ if __name__ == '__main__':
     default_limit = '400'
     limit = input(f'Enter the number of players (default: {default_limit}): ') or default_limit
 
-    # Construct the 'x-fantasy-filter' value
+    # x_fantasy_filter = '{"players":{"filterSlotIds":{"value":[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,23,24]},"filterStatsForExternalIds":{"value":[2024]},"filterStatsForSourceIds":{"value":[1]},"sortAppliedStatTotal":{"sortAsc":false,"sortPriority":1,"value":"102024"},"sortDraftRanks":{"sortPriority":2,"sortAsc":true,"value":"PPR"},"sortPercOwned":{"sortPriority":4,"sortAsc":false},"limit":50,"offset":0,"filterRanksForScoringPeriodIds":{"value":[1]},"filterRanksForRankTypes":{"value":["PPR"]},"filterRanksForSlotIds":{"value":[0,2,4,6,17,16,8,9,10,12,13,24,11,14,15]},"filterStatsForTopScoringPeriodIds":{"value":2,"additionalValue":["002024","102024","002023","022024"]}}}'
+    # Construct the 'x-fantasy-filter' value - note the year inputs
     x_fantasy_filter = (
-        '{"players":{"filterSlotIds":{"value":[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,23,24]},'
+        f'{{"players":{{'
+        f'"filterSlotIds":{{"value":[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,23,24]}},'
         f'"filterStatsForExternalIds":{{"value":[{year}]}},'
-        '"filterStatsForSourceIds":{"value":[1]},'
-        '"sortAppliedStatTotal":{"sortAsc":false,"sortPriority":1,"value":"102023"},'  # Sort in descending order of projected total fantasy points
-        '"sortDraftRanks":{"sortPriority":2,"sortAsc":true,"value":"PPR"},'
-        '"sortPercOwned":{"sortPriority":4,"sortAsc":false},'
+        f'"filterStatsForSourceIds":{{"value":[1]}},'
+        f'"sortAppliedStatTotal":{{"sortAsc":false,"sortPriority":1,"value":"10{year}"}},'  # Sort in descending order of projected total fantasy points
+        f'"sortDraftRanks":{{"sortPriority":2,"sortAsc":true,"value":"PPR"}},'
+        f'"sortPercOwned":{{"sortPriority":4,"sortAsc":false}},'
         f'"limit":{limit},'  # Allow fetching more than 50 players
-        '"offset":0,'
-        '"filterRanksForScoringPeriodIds":{"value":[1]},'
-        '"filterRanksForRankTypes":{"value":["PPR"]},'
-        '"filterRanksForSlotIds":{"value":[0,2,4,6,17,16]},'
-        '"filterStatsForTopScoringPeriodIds":{"value":2,"additionalValue":["002023","102023","002022","022023"]}}}')
+        f'"offset":0,'
+        f'"filterRanksForScoringPeriodIds":{{"value":[1]}},'
+        f'"filterRanksForRankTypes":{{"value":["PPR"]}},'
+        f'"filterRanksForSlotIds":{{"value":[0,2,4,6,17,16,8,9,10,12,13,24,11,14,15]}},'
+        f'"filterStatsForTopScoringPeriodIds":{{"value":2,"additionalValue":["00{year}","10{year}","002023","02{year}"]}}}}'
+        '}'
+    )
 
     # Update the headers with the x-fantasy-filter
     updated_headers = update_headers(config.headers.copy(), x_fantasy_filter)
